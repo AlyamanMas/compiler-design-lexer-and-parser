@@ -3,3 +3,4 @@
 *.zip
 output/
 lex.yy.c
+*.o
