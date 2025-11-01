@@ -1,5 +1,6 @@
-# NOTE: this file is the grammar before removing left recursion
+# NOTE: this file is the grammar before removing left recursion and common prefixes
 # NOTE: empty here is for the empty string or epsillon/Lambda. Basically meaning the rule can go into nothing
+# NOTE: the following rules are tokens/terminals that come from the lexer defined in lexer.l: NUM, ID, if, else, while, int, float... and everything that does not have a production rule on the left handside of this file, and everything double-quoted
 program ::= Program ID "{" declaration-list statement-list "}" "."
 declaration-list ::= declaration-list declaration | declaration
 declaration ::= var-declaration
