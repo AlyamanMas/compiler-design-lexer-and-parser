@@ -64,4 +64,8 @@ report:
 	pandoc REPORT.md -o REPORT.pdf --pdf-engine=xelatex -V geometry:margin=1in -V fontsize=11pt --toc --toc-depth=3
 	@echo "Report generated: REPORT.pdf"
 
-.PHONY: all clean test test-png report
+report-typst:
+	pandoc REPORT.md -o REPORT.typ.pdf --pdf-engine=typst --toc --toc-depth=3
+	@echo "Report generated: REPORT.typ.pdf"
+
+.PHONY: all clean test test-png report report-typst
