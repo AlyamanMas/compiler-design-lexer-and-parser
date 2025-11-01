@@ -51,11 +51,11 @@ clean:
 
 # Run with test file
 test: $(TARGET)
-	./$(TARGET) tests/test_input.c
+	./$(TARGET) tests/test_parser.c
 
 # Run and generate PNG
 test-png: $(TARGET)
-	./$(TARGET) tests/test_input.c parse_tree.dot
+	./$(TARGET) tests/test_parser.c parse_tree.dot
 	dot -Tpng parse_tree.dot -o parse_tree.png
 	@echo "Parse tree visualization saved to parse_tree.png"
 
