@@ -1,0 +1,5 @@
+*.exe
+*.pdf
+*.zip
+output/
+lex.yy.c
