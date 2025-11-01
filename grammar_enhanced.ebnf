@@ -1,0 +1,95 @@
+# NOTE: This file is the grammar AFTER removing left recursion and applying left factoring
+# NOTE: empty here is for the empty string or epsilon/Lambda. Basically meaning the rule can go into nothing
+# NOTE: the following rules are tokens/terminals that come from the lexer defined in lexer.l: NUM, ID, if, else, while, int, float... and everything that does not have a production rule on the left handside of this file, and everything double-quoted
+
+# Original rule (no changes needed)
+program ::= Program ID "{" declaration-list statement-list "}" "."
+
+# TRANSFORMED: Removed left recursion from declaration-list
+# Original: declaration-list ::= declaration-list declaration | declaration
+# Using A ::= Aα | β => A ::= βA', A' ::= αA' | empty
+declaration-list ::= declaration declaration-list'
+declaration-list' ::= declaration declaration-list' | empty
+
+# Original rule (no changes needed)
+declaration ::= var-declaration
+
+# TRANSFORMED: Applied left factoring to var-declaration
+# Original: var-declaration ::= type-specifier ID ";" | type-specifier ID "[" NUM "]" ";"
+# Common prefix: type-specifier ID
+var-declaration ::= type-specifier ID var-declaration'
+var-declaration' ::= ";" | "[" NUM "]" ";"
+
+# Original rule (no changes needed)
+type-specifier ::= int | float
+
+# Original rule (no changes needed)
+params ::= param-list | "void"
+
+# TRANSFORMED: Removed left recursion from param-list
+# Original: param-list ::= param-list "," param | param
+param-list ::= param param-list'
+param-list' ::= "," param param-list' | empty
+
+# TRANSFORMED: Applied left factoring to param
+# Original: param ::= type-specifier ID | type-specifier ID "[" "]"
+# Common prefix: type-specifier ID
+param ::= type-specifier ID param'
+param' ::= empty | "[" "]"
+
+# Original rule (no changes needed)
+compound-stmt ::= "{" statement-list "}"
+
+# TRANSFORMED: Removed left recursion from statement-list
+# Original: statement-list ::= statement-list statement | empty
+# Special case where one alternative is already empty
+statement-list ::= statement-list'
+statement-list' ::= statement statement-list' | empty
+
+# Original rule (no changes needed)
+statement ::= assignment-stmt | compound-stmt | selection-stmt | iteration-stmt
+
+# TRANSFORMED: Applied left factoring to selection-stmt
+# Original: selection-stmt ::= if "(" expression ")" statement | if "(" expression ")" statement else statement
+# Common prefix: if "(" expression ")" statement
+selection-stmt ::= if "(" expression ")" statement selection-stmt'
+selection-stmt' ::= empty | else statement
+
+# Original rule (no changes needed)
+iteration-stmt ::= while "(" expression ")" statement
+
+# Original rule (no changes needed)
+assignment-stmt ::= var "=" expression
+
+# TRANSFORMED: Applied left factoring to var
+# Original: var ::= ID | ID "[" expression "]"
+# Common prefix: ID
+var ::= ID var'
+var' ::= empty | "[" expression "]"
+
+# TRANSFORMED: Removed left recursion from expression
+# Original: expression ::= expression relop additive-expression | additive-expression
+expression ::= additive-expression expression'
+expression' ::= relop additive-expression expression' | empty
+
+# Original rule (no changes needed)
+relop ::= "<" | "<=" | ">" | ">=" | "==" | "!="
+
+# TRANSFORMED: Removed left recursion from additive-expression
+# Original: additive-expression ::= additive-expression addop term | term
+additive-expression ::= term additive-expression'
+additive-expression' ::= addop term additive-expression' | empty
+
+# Original rule (no changes needed)
+addop ::= "+" | "-"
+
+# TRANSFORMED: Removed left recursion from term
+# Original: term ::= term mulop factor | factor
+term ::= factor term'
+term' ::= mulop factor term' | empty
+
+# Original rule (no changes needed)
+mulop ::= "*" | "/"
+
+# Original rule (no changes needed)
+factor ::= "(" expression ")" | var | NUM
